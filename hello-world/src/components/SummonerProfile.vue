@@ -54,7 +54,6 @@ methods: {
           prompt(error);
         } else {
           reqResults = JSON.parse(data.Payload)
-          console.log(data.Payload)
           this.summonerName = reqResults.name
           this.summonerLevel = reqResults.summonerLevel
           this.profileIconID = reqResults.profileIconId
