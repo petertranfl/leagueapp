@@ -1,23 +1,28 @@
 <template>
   <div id="app">
-    <SummonerProfile/>
+    <Profile/>
   </div>
 </template>
 
 <script>
-import SummonerProfile from './components/SummonerProfile.vue'
+import Profile from './views/Profile.vue'
 
 export default {
   name: 'app',
   components: {
-    SummonerProfile
+    Profile
   }
 }
 </script>
 
 <style>
+@font-face {
+  font-family: 'Friz Quadrata Regular'; /* League of Legends Font (almost) */
+  src: url('./assets/Friz Quadrata Regular.ttf') format('truetype'); /* Safari, Android, iOS */
+  src: url('./assets/Friz Quadrata Regular.woff') format('woff') /* Modern Browsers */
+}
+
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

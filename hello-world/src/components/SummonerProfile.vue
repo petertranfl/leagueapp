@@ -7,65 +7,69 @@
 </template>
 
 <script>
-    import AWS from 'aws-sdk'
+import AWS from 'aws-sdk'
 
-    export default {
-        name: 'SummonerProfile',
-        data() {
-            return {
-                summonerName: String,
-                summonerLevel: Number,
-                userSummonerName: String,
-                profileIconID: Number,
-                encrypedSummonerID: String,
-            }
-        },
-        methods: {
-            getNASummonerData() {
-                this.isLoading = true;
-
-                //load AWS credentials
-                AWS.config.region = 'us-east-2';
-                AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-                    IdentityPoolId: 'us-east-2:20fd57cf-7bb6-4352-b5ce-69eca3907336'
-                });
-
-                //create AWS service object
-                var lambda = new AWS.Lambda({region: 'us-east-2'});
-                //create JSON object for parameters for invoking Lambda function
-                var summonerParams = {
-                    FunctionName: 'getNASummonerDataByName',
-                    InvocationType: 'RequestResponse',
-                    LogType: 'None',
-                    Payload: '{"SummonerName?": ' + `"` + this.userSummonerName + '"}'
-                };
-                //create variable to hold data returned by Lambda function
-                var summonerResults;
-
-                //Calls Lambda function 'GetSummonerDataByName' with given reqParams
-                lambda.invoke(summonerParams, (error, data) => {
-                    if (error) {
-                    this.isLoading = false;
-                    prompt(error);
-                    } else {
-                    summonerResults = JSON.parse(data.Payload)
-                    console.log(summonerResults);
-                    this.summonerName = summonerResults.name;
-                    this.summonerLevel = summonerResults.summonerLevel;
-                    this.profileIconID = summonerResults.profileIconId;
-                    this.encryptedSummonerID = summonerResults.summonerId;
-                    this.getChampionMasteryByID();
-                    this.isLoading = false;
-                    return
-                    }
-                });
-            },
+export default {
+    name: 'SummonerProfile',
+    data() {
+        return {
+            summonerName: String,
+            summonerLevel: Number,
+            userSummonerName: "lolitspetey",
+            profileIconID: Number,
+            encrypedSummonerID: String,
         }
+    },
+    methods: {
+        getNASummonerData() {
+
+            //load AWS credentials
+            AWS.config.region = 'us-east-2';
+            AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+                IdentityPoolId: 'us-east-2:20fd57cf-7bb6-4352-b5ce-69eca3907336'
+            });
+
+            //create AWS service object
+            var lambda = new AWS.Lambda({region: 'us-east-2'});
+            //create JSON object for parameters for invoking Lambda function
+            var summonerParams = {
+                FunctionName: 'getNASummonerDataByName',
+                InvocationType: 'RequestResponse',
+                LogType: 'None',
+                Payload: '{"SummonerName?": ' + `"` + this.userSummonerName + '"}'
+            };
+            //create variable to hold data returned by Lambda function
+            var summonerResults;
+
+            //Calls Lambda function 'GetSummonerDataByName' with given reqParams
+            lambda.invoke(summonerParams, (error, data) => {
+                if (error) {
+                prompt(error);
+                } else {
+                summonerResults = JSON.parse(data.Payload)
+                this.summonerName = summonerResults.name;
+                this.summonerLevel = summonerResults.summonerLevel;
+                this.profileIconID = summonerResults.profileIconId;
+                this.encryptedSummonerID = summonerResults.id;
+                this.getSummonerID(summonerResults.id);
+                }
+            });
+        },
+        getSummonerID(encrypedSummonerID) {
+            this.$emit('getSummonerID', encrypedSummonerID)
+        }
+    },
+    created() {
+        this.getNASummonerData()
     }
+}
 </script>
 
 <style scoped>
     .main-container{
-        display: flex
+        display: flex;
+        height: 300px;
+        flex-direction: column;
+        align-items: center;
     }
 </style>
