@@ -17,25 +17,23 @@ type ChampionMasteryRequest struct {
 	SummonerID   string `json:"SummonerID?"`
 }
 
-//MasteryDataArray holds the struct for Riot's Response
-type MasteryDataArray []struct {
-	ChampionMasteryData []struct {
-		ChestGranted                 bool   `json:"chestGranted,omitempty"`
-		ChampionLevel                int    `json:"championLevel,omitempty"`
-		ChampionPoints               int    `json:"championPoints,omitempty"`
-		ChampionID                   int64  `json:"championId,omitempty"`
-		ChampionPointsUntilNextLevel int64  `json:"championPointsUntilNextLevel,omitempty"`
-		LastPlayTime                 int64  `json:"lastPlayTime,omitempty"`
-		TokensEarned                 int    `json:"tokensEarned,omitempty"`
-		ChampionPointsSinceLastLevel int64  `json:"championPointsSinceLastLevel,omitempty"`
-		SummonerID                   string `json:summonerId,omitempty`
-	}
+//ChampionMasteryData holds the struct for Riot's Response
+type ChampionMasteryData struct {
+	ChestGranted                 bool   `json:"chestGranted,omitempty"`
+	ChampionLevel                int    `json:"championLevel,omitempty"`
+	ChampionPoints               int    `json:"championPoints,omitempty"`
+	ChampionID                   int64  `json:"championId,omitempty"`
+	ChampionPointsUntilNextLevel int64  `json:"championPointsUntilNextLevel,omitempty"`
+	LastPlayTime                 int64  `json:"lastPlayTime,omitempty"`
+	TokensEarned                 int    `json:"tokensEarned,omitempty"`
+	ChampionPointsSinceLastLevel int64  `json:"championPointsSinceLastLevel,omitempty"`
+	SummonerID                   string `json:summonerId,omitempty`
 }
 
 var myClient = &http.Client{Timeout: 10 * time.Second}
 
 //getJSON reads JSON body and writes to target
-func getJSON(url string, target MasteryDataArray) error {
+func getJSON(url string, target *[]ChampionMasteryData) error {
 	r, err := myClient.Get(url)
 	if err != nil {
 		log.Print("Error requesting data from Riot NA Server")
@@ -49,10 +47,10 @@ func getJSON(url string, target MasteryDataArray) error {
 }
 
 //getChampionMasteryByID requests ChampionMastery by SummonerID in NA
-func getChampionMasteryByID(user ChampionMasteryRequest) (MasteryDataArray, error) {
+func getChampionMasteryByID(user ChampionMasteryRequest) ([]ChampionMasteryData, error) {
 	apiKey := os.Getenv("apiKey")
-	response := MasteryDataArray{}
-	err := getJSON("https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/"+user.SummonerID+"?api_key="+apiKey, response)
+	var response []ChampionMasteryData
+	err := getJSON("https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/"+user.SummonerID+"?api_key="+apiKey, &response)
 	if err != nil {
 		log.Print("Error writing JSON to struct")
 		log.Fatal(err)
