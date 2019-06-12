@@ -1,5 +1,5 @@
 <template>
-    <div class="main-container">
+    <div v-if="encryptedSummonerID" class="main-container">
 
     </div>
 </template>
@@ -18,6 +18,11 @@ export default {
     props: {
         encryptedSummonerID: {
             type: String
+        }
+    },
+    computed: {
+        updateEncryptedSummonerID() {
+            return this.encryptedSummonerID
         }
     },
     methods: {
@@ -55,9 +60,6 @@ export default {
             })
         }
     },
-    created() {
-        this.getChampionMasteryByID();
-    }
 }
 </script>
 

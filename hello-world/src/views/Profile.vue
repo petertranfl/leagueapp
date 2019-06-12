@@ -31,7 +31,7 @@ export default {
       this.encryptedSummonerID = summonerID
       console.log(summonerID)
     }
-  }
+  },
 }
 </script>
 

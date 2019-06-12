@@ -52,6 +52,7 @@ export default {
                 this.profileIconID = summonerResults.profileIconId;
                 this.encryptedSummonerID = summonerResults.id;
                 this.getSummonerID(summonerResults.id);
+                
                 }
             });
         },
