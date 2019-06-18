@@ -6,6 +6,7 @@
 
 <script>
 import Profile from './views/Profile.vue'
+import store from './store/index.js'
 
 export default {
   name: 'app',

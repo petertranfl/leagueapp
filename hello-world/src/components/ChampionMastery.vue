@@ -1,5 +1,5 @@
 <template>
-    <div v-if="encryptedSummonerID" class="main-container">
+    <div v-if="masteryDataLoaded" class="main-container">
 
     </div>
 </template>
@@ -13,18 +13,14 @@ export default {
             ChampionPoints: Number,
             ChampionID: "lolitspetey",
             ChampionLevel: Number,
+            masteryDataLoaded: false,
         }
     },
-    props: {
-        encryptedSummonerID: {
-            type: String
-        }
-    },
-    computed: {
-        updateEncryptedSummonerID() {
-            return this.encryptedSummonerID
-        }
-    },
+    // computed: {
+    //     encryptedSummonerID() {
+    //         return store.state.encryptedSummonerID
+    //     }
+    // },
     methods: {
         getChampionMasteryByID() {
 
@@ -41,25 +37,36 @@ export default {
             FunctionName: 'getChampionMasteryByID',
             InvocationType: 'RequestResponse',
             LogType: 'None',
-            Payload: '{"SummonerID?": ' + `"` + this.encryptedSummonerID + '"}'
+            Payload: '{"SummonerID?": ' + `"` + this.summonerID + '"}'
             };
         //create variable to hold data returned by Lambda function
         var masteryResults;
 
         lambda.invoke(masteryParams, (error, data) => {
             if (error) {
-                this.isLoading = false;
+                this.masteryDataLoaded = true;
                 prompt(error);
             } else {
                 masteryResults = JSON.parse(data.Payload);
                 this.ChampionPoints = masteryResults.championPoints;
                 this.ChampionID = masteryResults.championId;
                 this.ChampionLevel = masteryResults.championLevel;
+                this.masteryDataLoaded = true;
                 console.log(masteryResults)
                 }
             })
         }
     },
+    computed: {
+        summonerID() {
+            return this.$store.getters.getEncryptedSummonerID
+        }
+    },
+    watch: {
+        summonerID(oldSumID, newSumID) {
+            this.getChampionMasteryByID()
+        }
+    }
 }
 </script>
 

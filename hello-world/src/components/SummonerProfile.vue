@@ -51,13 +51,9 @@ export default {
                 this.summonerLevel = summonerResults.summonerLevel;
                 this.profileIconID = summonerResults.profileIconId;
                 this.encryptedSummonerID = summonerResults.id;
-                this.getSummonerID(summonerResults.id);
-                
+                this.$store.dispatch('commitSummonerID', this.encryptedSummonerID)
                 }
             });
-        },
-        getSummonerID(encrypedSummonerID) {
-            this.$emit('getSummonerID', encrypedSummonerID)
         }
     },
     created() {

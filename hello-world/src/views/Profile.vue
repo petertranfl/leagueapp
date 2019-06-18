@@ -3,8 +3,8 @@
     <div v-if="isLoading" class="loadingIcon">
     </div>
     <div v-else>
-      <SummonerProfile v-on:getSummonerID="getSummonerID"></SummonerProfile>
-      <ChampionMastery :encrypedSummonerID="encryptedSummonerID" ></ChampionMastery>
+      <SummonerProfile></SummonerProfile>
+      <ChampionMastery></ChampionMastery>
     </div>
   </div>
 
@@ -23,13 +23,6 @@ export default {
   data() {
     return {
       isLoading: false,
-      encryptedSummonerID: String,
-    }
-  },
-  methods: {
-    getSummonerID(summonerID) {
-      this.encryptedSummonerID = summonerID
-      console.log(summonerID)
     }
   },
 }
