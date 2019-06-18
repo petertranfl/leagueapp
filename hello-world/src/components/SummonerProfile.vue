@@ -1,6 +1,6 @@
 <template>
     <div class="main-container">
-        <h1><img :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/' + profileIconID + '.jpg'"/></h1>
+        <img :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/' + profileIconID + '.jpg'"/>
         <h2>{{summonerName}}</h2>
         <p>Lvl: {{summonerLevel}}</p>
     </div>

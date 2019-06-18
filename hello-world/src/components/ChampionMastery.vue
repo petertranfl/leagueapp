@@ -1,19 +1,27 @@
 <template>
     <div v-if="masteryDataLoaded" class="main-container">
-
+        <div class="championsContainer">
+            <div>
+                    <img :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/' + masteryResults[0].championId + '.png'"/>
+            </div>
+            <div>
+                     <img :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/' + masteryResults[1].championId + '.png'"/>
+            </div>
+            <div>
+                     <img :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/' + masteryResults[2].championId + '.png'"/>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
 import AWS from 'aws-sdk'
 export default {
-    name: 'SummonerProfile',
+    name: 'ChampionMastery',
     data() {
         return {
-            ChampionPoints: Number,
-            ChampionID: "lolitspetey",
-            ChampionLevel: Number,
             masteryDataLoaded: false,
+            masteryResults: []
         }
     },
     // computed: {
@@ -44,15 +52,10 @@ export default {
 
         lambda.invoke(masteryParams, (error, data) => {
             if (error) {
-                this.masteryDataLoaded = true;
                 prompt(error);
             } else {
-                masteryResults = JSON.parse(data.Payload);
-                this.ChampionPoints = masteryResults.championPoints;
-                this.ChampionID = masteryResults.championId;
-                this.ChampionLevel = masteryResults.championLevel;
+                this.masteryResults = JSON.parse(data.Payload)
                 this.masteryDataLoaded = true;
-                console.log(masteryResults)
                 }
             })
         }
@@ -71,5 +74,10 @@ export default {
 </script>
 
 <style scoped>
-
+    .championsContainer {
+        display: flex;
+        justify-content: space-evenly;
+        align-items: baseline;
+        margin-top: 10em;
+    }
 </style>
