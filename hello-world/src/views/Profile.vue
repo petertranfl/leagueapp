@@ -5,6 +5,7 @@
     <div v-else>
       <SummonerProfile></SummonerProfile>
       <ChampionMastery></ChampionMastery>
+      <MatchHistory></MatchHistory>>
     </div>
   </div>
 
@@ -13,6 +14,7 @@
 <script>
 import SummonerProfile from '../components/SummonerProfile'
 import ChampionMastery from '../components/ChampionMastery'
+
 
 export default {
   name: 'Profile',
@@ -50,5 +52,6 @@ export default {
   width: 100vw;
   background-image: url("https://lolstatic-a.akamaihd.net/lolkit/1.1.6/resources/images/bg-default.jpg");
   background-size: 100% 100%;
+  z-index: -1;
 }
 </style>

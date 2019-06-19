@@ -1,14 +1,17 @@
 <template>
-    <div v-if="masteryDataLoaded" class="main-container">
+    <div v-if="masteryDataLoaded">
         <div class="championsContainer">
             <div>
                     <img :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/' + masteryResults[0].championId + '.png'"/>
+                    <h3>{{masteryResults[0].championPoints}} Pts</h3>
             </div>
             <div>
                      <img :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/' + masteryResults[1].championId + '.png'"/>
+                     <h3>{{masteryResults[1].championPoints}} Pts</h3>
             </div>
             <div>
                      <img :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/' + masteryResults[2].championId + '.png'"/>
+                     <h3>{{masteryResults[2].championPoints}} Pts</h3>
             </div>
         </div>
     </div>
@@ -24,11 +27,16 @@ export default {
             masteryResults: []
         }
     },
-    // computed: {
-    //     encryptedSummonerID() {
-    //         return store.state.encryptedSummonerID
-    //     }
-    // },
+    computed: {
+        summonerID() {
+            return this.$store.getters.getEncryptedSummonerID
+        }
+    },
+    watch: {
+        summonerID(oldSumID, newSumID) {
+            this.getChampionMasteryByID()
+        }
+    },
     methods: {
         getChampionMasteryByID() {
 
@@ -47,8 +55,6 @@ export default {
             LogType: 'None',
             Payload: '{"SummonerID?": ' + `"` + this.summonerID + '"}'
             };
-        //create variable to hold data returned by Lambda function
-        var masteryResults;
 
         lambda.invoke(masteryParams, (error, data) => {
             if (error) {
@@ -60,24 +66,16 @@ export default {
             })
         }
     },
-    computed: {
-        summonerID() {
-            return this.$store.getters.getEncryptedSummonerID
-        }
-    },
-    watch: {
-        summonerID(oldSumID, newSumID) {
-            this.getChampionMasteryByID()
-        }
-    }
 }
 </script>
 
 <style scoped>
     .championsContainer {
         display: flex;
+        position: relative;
         justify-content: space-evenly;
         align-items: baseline;
-        margin-top: 10em;
+        height:2em;
+        width: auto;
     }
 </style>
