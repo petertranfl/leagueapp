@@ -13,14 +13,16 @@ import (
 
 //MatchHistoryRequest holds the data to use to lookup Match History
 type MatchHistoryRequest struct {
-	AccountID string `json:"AccountID?"`
+	AccountID  string `json:"AccountID?"`
+	BeginIndex string `json:"BeginIndex?"`
+	EndIndex   string `json:"EndIndex?"`
 }
 
 //MatchHistoryData holds the struct for Riot's Response
 type MatchHistoryData struct {
 	Matches    *[]MatchReference `json:"matches"`
 	TotalGames int               `json:"totalGames"`
-	StartIndex int               `json:"startIndex"`
+	BeginIndex int               `json:"beginIndex"`
 	EndIndex   int               `json:"endIndex"`
 }
 
@@ -56,7 +58,7 @@ func getJSON(url string, target *MatchHistoryData) error {
 func getMatchHistory(user MatchHistoryRequest) (MatchHistoryData, error) {
 	apiKey := os.Getenv("apiKey")
 	var response MatchHistoryData
-	err := getJSON("https://na1.api.riotgames.com/lol/match/v4/matchlists/by-account/"+user.AccountID+"?api_key="+apiKey, &response)
+	err := getJSON("https://na1.api.riotgames.com/lol/match/v4/matchlists/by-account/"+user.AccountID+"?endIndex="+user.EndIndex+"&beginIndex="+user.BeginIndex+"&api_key="+apiKey, &response)
 	if err != nil {
 		log.Print("Error writing JSON to struct")
 		log.Fatal(err)

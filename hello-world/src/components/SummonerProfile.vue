@@ -2,7 +2,7 @@
     <div class="main-container">
         <div v-if="summonerDataLoaded">
             <div class="profile-container">
-                <img id="rankedBorder" :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/' + leagueNumber + '_' + soloSummonerLeague + '/images/' + soloSummonerLeague + '_base_sheeng.png'" alt=""/>
+                <img id="rankedCrest" :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/' + leagueNumber + '_' + soloSummonerLeague + '/images/' + soloSummonerLeague + '_base_sheeng.png'" alt=""/>
                 <img id="profileIcon" :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/' + profileIconID + '.jpg'"/>
                 <img id="banner" :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/assets/regalia/banners/backgrounds/solidbanner_still.png'"/>
                 <img id="trim" :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/assets/regalia/banners/trims/' + banner + '.png'"/>
@@ -24,7 +24,7 @@ export default {
         return {
             summonerName: String,
             summonerLevel: Number,
-            userSummonerName: "lolitspetey",
+            userSummonerName: "Joseph Joestar",
             profileIconID: Number,
             encryptedSummonerID: String,
             flexSummonerLeague: String,
@@ -149,7 +149,6 @@ export default {
                 prompt(error);
                 } else {
                 this.leagueResults = JSON.parse(data.Payload);
-                console.log(data.Payload);
                 this.sortNALeagueData(this.leagueResults);
                 this.summonerDataLoaded = true;
                 }
@@ -182,9 +181,9 @@ export default {
         height: 350px;
     }
 
-    .profile-container #rankedBorder {
+    .profile-container #rankedCrest {
         position: absolute;
-        top: 5em;
+        top: 1.3em;
         left: 6.25em;
         z-index: 2;
     }
@@ -193,11 +192,11 @@ export default {
         width: 30%;
         height: auto;
         border-radius: 50%;
-        top: 11em;
+        top: 7em;
         right: 10.9em;
     }
     .profile-container #banner {
-        height: 31em;
+        height: 29em;
         width: 13.1em;
         z-index: -1;
     }
@@ -206,17 +205,16 @@ export default {
         height: 6.6em;
         width: auto;
         position: absolute;
-        top: 25.2em;
+        top: 23.2em;
         left: 9em;
     }
 
     .text-container {
         position: relative
-
     }
     
     h2 {
-        margin-top: 0.6em;
+        margin-top: -1.3em;
         color: #fad161
     }
     h3 {

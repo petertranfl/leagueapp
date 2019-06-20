@@ -5,7 +5,7 @@
     <div v-else>
       <SummonerProfile></SummonerProfile>
       <ChampionMastery></ChampionMastery>
-      <MatchHistory></MatchHistory>>
+      <MatchHistory></MatchHistory>
     </div>
   </div>
 
@@ -14,13 +14,15 @@
 <script>
 import SummonerProfile from '../components/SummonerProfile'
 import ChampionMastery from '../components/ChampionMastery'
+import MatchHistory from '../components/MatchHistory'
 
 
 export default {
   name: 'Profile',
   components: {
     SummonerProfile,
-    ChampionMastery
+    ChampionMastery,
+    MatchHistory
   },
   data() {
     return {
