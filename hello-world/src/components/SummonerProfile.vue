@@ -24,7 +24,7 @@ export default {
         return {
             summonerName: String,
             summonerLevel: Number,
-            userSummonerName: "Joseph Joestar",
+            userSummonerName: "lolitspetey",
             profileIconID: Number,
             encryptedSummonerID: String,
             flexSummonerLeague: String,

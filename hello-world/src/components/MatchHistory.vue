@@ -50,18 +50,14 @@ export default {
                 prompt(error);
             } else {
                 this.matchHistoryData = JSON.parse(data.Payload);
-                console.log(this.matchHistoryData.matches[0])
                 for (var i = 0; i < this.matchHistoryData.matches.length; i++) {
-                        var tempData = this.getMatchDetails(this.matchHistoryData.matches.gameId);
-                        this.matchHistoryData[i].forEach(function(obj) {
-                            obj.matchDetails = tempData;
-                        })
+                        this.getMatchDetails(i, this.matchHistoryData.matches[i].gameId, this.matchHistoryData.matches[i]);
                     }
                 }
+                console.log(this.matchHistoryData)
             })
         },
-        getMatchDetails(matchID) {
-
+        getMatchDetails(index, matchID, match) {
             //load AWS credentials
         AWS.config.region = 'us-east-2';
         AWS.config.credentials = new AWS.CognitoIdentityCredentials({
@@ -72,7 +68,7 @@ export default {
         const lambda = new AWS.Lambda({region: 'us-east-2'});
         //create JSON object for parameters for invoking Lambda function
         var matchDetailsParams = {
-            FunctionName: 'getChampionMasteryByID',
+            FunctionName: 'getMatchDetails',
             InvocationType: 'RequestResponse',
             LogType: 'None',
             Payload: '{"MatchID?": "' + matchID + '"}'
@@ -81,7 +77,7 @@ export default {
             if (error) {
                 prompt(error);
             } else {
-                return JSON.parse(data.Payload);
+                this.matchHistoryData.matches[index].matchDetails = JSON.parse(data.Payload);
                 }
             })
         },
