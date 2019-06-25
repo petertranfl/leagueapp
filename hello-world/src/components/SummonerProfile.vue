@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import AWS from 'aws-sdk'
+import AWS from 'aws-sdk';
 
 export default {
     name: 'SummonerProfile',
@@ -120,7 +120,7 @@ export default {
                 this.summonerLevel = summonerResults.summonerLevel;
                 this.profileIconID = summonerResults.profileIconId;
                 this.encryptedSummonerID = summonerResults.id;
-                this.$store.dispatch('commitSummonerID', summonerResults.id)
+                this.$store.dispatch('commitSummonerID', summonerResults.id);
                 this.$store.dispatch('commitAccountID', summonerResults.accountId)
                 }
             });
@@ -150,6 +150,7 @@ export default {
                 } else {
                 this.leagueResults = JSON.parse(data.Payload);
                 this.sortNALeagueData(this.leagueResults);
+                this.$store.dispatch('commitLeagueTier', this.soloSummonerLeague);
                 this.summonerDataLoaded = true;
                 }
             });

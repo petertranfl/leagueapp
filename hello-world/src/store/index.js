@@ -6,6 +6,7 @@ Vue.use(Vuex)
 const state = {
     encryptedSummonerID: String,
     accountID: String,
+    leagueTier : String,
 }
 
 const getters = {
@@ -14,6 +15,9 @@ const getters = {
     },
     getAccountID(state) {
         return state.accountID
+    },
+    getLeagueTier(state) {
+        return state.leagueTier
     }
 }
 
@@ -23,6 +27,9 @@ const mutations = {
     },
     saveAccountID(state, aID) {
         state.accountID = aID
+    },
+    saveLeagueTier(state, leagueTier) {
+        state.leagueTier = leagueTier
     }
 }
 
@@ -32,6 +39,9 @@ const actions = {
     },
     commitAccountID(context, aID) {
         context.commit('saveAccountID', aID)
+    },
+    commitLeagueTier(context, leagueTier) {
+        context.commit('saveLeagueTier', leagueTier)
     }
 }
 

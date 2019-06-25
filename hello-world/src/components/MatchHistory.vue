@@ -1,13 +1,23 @@
 <template>
     <div v-if="matchHistoryDataLoaded">
         <div class="matchHistoryContainer">
-           
+           <table class="table">
+               <tr v-for="(matches, index) in matchHistoryData.matches" :key="index">
+                    <td>
+                        <img :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/' + matchHistoryData.matches[index].champion + '.png'"/>
+                    </td>
+                    <td>
+                        <img :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/assets/ranked/positions/rankposition_' + leagueTier + '-' + lanePosition(index) + '.png'" alt=""/>
+                    </td>
+               </tr>
+           </table>
         </div>
     </div>
 </template>
 
 <script>
-import AWS from 'aws-sdk'
+import AWS from 'aws-sdk';
+
 export default {
     name: 'MatchHistory',
     data() {
@@ -19,10 +29,13 @@ export default {
     computed: {
         accountID() {
             return this.$store.getters.getAccountID
-        }
+        },
+        leagueTier() {
+            return this.$store.getters.getLeagueTier
+        },
     },
     watch: {
-        accountID(oldSumID, newSumID) {
+        accountID() {
             this.getMatchHistory("0", "10")
         }
     },
@@ -51,13 +64,14 @@ export default {
             } else {
                 this.matchHistoryData = JSON.parse(data.Payload);
                 for (var i = 0; i < this.matchHistoryData.matches.length; i++) {
-                        this.getMatchDetails(i, this.matchHistoryData.matches[i].gameId, this.matchHistoryData.matches[i]);
+                        this.getMatchDetails(i, this.matchHistoryData.matches[i].gameId);
                     }
                 }
+                this.matchHistoryDataLoaded = true;
                 console.log(this.matchHistoryData)
             })
         },
-        getMatchDetails(index, matchID, match) {
+        getMatchDetails(index, matchID) {
             //load AWS credentials
         AWS.config.region = 'us-east-2';
         AWS.config.credentials = new AWS.CognitoIdentityCredentials({
@@ -81,17 +95,31 @@ export default {
                 }
             })
         },
+        lanePosition(index) {
+        if (this.matchHistoryData.matches[index].lane == "BOTTOM") {
+            return this.matchHistoryData.matches[index].lane = "bot"
+        }
+        else {
+            return this.matchHistoryData.matches[index].lane.toLowerCase()
+             }
+        }
     }
 }
 </script>
 
 <style scoped>
-    .championsContainer {
+    .matchHistoryContainer {
         display: flex;
         position: relative;
-        justify-content: space-evenly;
-        align-items: baseline;
-        height:2em;
-        width: auto;
+        justify-content: center;
+    }
+
+    .table {
+
+    }
+
+    img {
+        width: 40%;
+        height: auto;
     }
 </style>

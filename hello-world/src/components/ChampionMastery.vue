@@ -18,7 +18,8 @@
 </template>
 
 <script>
-import AWS from 'aws-sdk'
+import AWS from 'aws-sdk';
+
 export default {
     name: 'ChampionMastery',
     data() {
@@ -75,7 +76,10 @@ export default {
         position: relative;
         justify-content: space-evenly;
         align-items: baseline;
-        height:2em;
-        width: auto;
+    }
+
+    img {
+        max-width: 90%;
+        height: auto;
     }
 </style>
