@@ -7,7 +7,10 @@
                         <img :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/' + matchHistoryData.matches[index].champion + '.png'"/>
                     </td>
                     <td>
-                        <img :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/assets/ranked/positions/rankposition_' + leagueTier + '-' + lanePosition(index) + '.png'" alt=""/>
+                        <img :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/assets/ranked/positions/rankposition_' + leagueTier + '-' + lanePosition(index) + '.png'" alt="" id="roleImg"/>
+                    </td>
+                    <td>
+                        {{getSummonerMatchStats(index)}}
                     </td>
                </tr>
            </table>
@@ -33,6 +36,9 @@ export default {
         leagueTier() {
             return this.$store.getters.getLeagueTier
         },
+        KDA(index) {
+            return this.getSummonerMatchStats(index).deaths
+        }
     },
     watch: {
         accountID() {
@@ -68,7 +74,6 @@ export default {
                     }
                 }
                 this.matchHistoryDataLoaded = true;
-                console.log(this.matchHistoryData)
             })
         },
         getMatchDetails(index, matchID) {
@@ -102,7 +107,21 @@ export default {
         else {
             return this.matchHistoryData.matches[index].lane.toLowerCase()
              }
-        }
+        },
+        getSummonerMatchStats(index) {
+                var tempParticipantID;
+                console.log(this.matchHistoryData.matches[index])
+                for (var j = 0; j < this.matchHistoryData.matches[index].matchDetails.participantIdentities.length; j++) {
+                    if (this.matchHistoryData.matches[index].matchDetails.participantIdentities[j].player.accountId == this.accountID) {
+                        this.matchHistoryData.matches[index].matchDetails.participantIdentities[j].participantId = tempParticipantID;
+                    }
+                };
+                for (var k = 0; k < this.matchHistoryData.matches[index].matchDetails.participants.length; k++) {
+                    if (this.matchHistoryData.matches[index].matchDetails.participants[k].participantId == tempParticipantID) {
+                        return this.matchHistoryData.matches[index].matchDetails.participants[k].stats
+                }
+            }
+        },
     }
 }
 </script>
@@ -118,8 +137,18 @@ export default {
 
     }
 
+    td{
+        padding-bottom: 1em;
+    }
+
     img {
         width: 40%;
+        height: auto;
+    }
+
+    #roleImg{
+        margin-left: -2em;
+        width: 120%;
         height: auto;
     }
 </style>
