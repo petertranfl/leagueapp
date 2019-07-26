@@ -24,7 +24,7 @@ export default {
         return {
             summonerName: String,
             summonerLevel: Number,
-            userSummonerName: "lolitspetey",
+            userSummonerName: "A Little Lemur",
             profileIconID: Number,
             encryptedSummonerID: String,
             flexSummonerLeague: String,
@@ -206,7 +206,7 @@ export default {
         height: 6.6em;
         width: auto;
         position: absolute;
-        top: 23.2em;
+        top: 23.6em;
         left: 9em;
     }
 
