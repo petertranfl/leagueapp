@@ -24,7 +24,7 @@ export default {
         return {
             summonerName: String,
             summonerLevel: Number,
-            userSummonerName: "A Little Lemur",
+            userSummonerName: "lolitspetey",
             profileIconID: Number,
             encryptedSummonerID: String,
             flexSummonerLeague: String,
@@ -93,13 +93,15 @@ export default {
         getNASummonerData() {
 
             //load AWS credentials
-            AWS.config.region = 'us-east-2';
             AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-                IdentityPoolId: 'us-east-2:20fd57cf-7bb6-4352-b5ce-69eca3907336'
+                IdentityPoolId: 'us-east-1:98b70204-c8a3-4336-b9be-ea2f4393f3b1',
+            },
+            {
+                region: 'us-east-1'
             });
 
             //create AWS service object
-            var lambda = new AWS.Lambda({region: 'us-east-2'});
+            var lambda = new AWS.Lambda({region: 'us-east-1'});
             //create JSON object for parameters for invoking Lambda function
             var summonerParams = {
                 FunctionName: 'getNASummonerDataByName',
@@ -126,15 +128,16 @@ export default {
             });
         },
         getNALeagueData() {
-
             //load AWS credentials
-            AWS.config.region = 'us-east-2';
-            AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-                IdentityPoolId: 'us-east-2:20fd57cf-7bb6-4352-b5ce-69eca3907336'
+           AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+                IdentityPoolId: 'us-east-1:98b70204-c8a3-4336-b9be-ea2f4393f3b1',
+            },
+            {
+                region: 'us-east-1'
             });
 
             //create AWS service object
-            var lambda = new AWS.Lambda({region: 'us-east-2'});
+            var lambda = new AWS.Lambda({region: 'us-east-1'});
             //create JSON object for parameters for invoking Lambda function
             var leagueParams = {
                 FunctionName: 'getNALeagueDataByID',
