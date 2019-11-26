@@ -5,7 +5,7 @@
     <div v-else>
       <SummonerProfile></SummonerProfile>
       <ChampionMastery></ChampionMastery>
-      <MatchHistory></MatchHistory>
+      <MatchHistory @clicked="finishLoading"></MatchHistory>
     </div>
   </div>
 
@@ -29,11 +29,21 @@ export default {
       isLoading: false,
     }
   },
+  methods: {
+    finishLoading(isLoaded) {
+      console.log(isLoaded)
+      this.isLoading = false
+    }
+  }
 }
 </script>
 
 
 <style>
+html, body {
+  margin: 0;
+  padding: 0;
+}
 .loadingIcon {
   border: 16px solid #f3f3f3; /* Light grey */
   border-top: 16px solid #3498db; /* Blue */
@@ -50,10 +60,10 @@ export default {
 }
 
 .summonerProfileBg{
-  height: 100vh;
-  width: 100vw;
-  background-image: url("https://lolstatic-a.akamaihd.net/lolkit/1.1.6/resources/images/bg-default.jpg");
-  background-size: 100% 100%;
-  z-index: -1;
+  background: url("https://lolstatic-a.akamaihd.net/lolkit/1.1.6/resources/images/bg-default.jpg") no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 }
 </style>

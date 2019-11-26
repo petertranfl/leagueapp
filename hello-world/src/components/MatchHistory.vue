@@ -1,23 +1,38 @@
 <template>
   <div v-if="matchHistoryDataLoaded">
     <div class="matchHistoryContainer">
-      <table class="table">
-        <tr v-for="(matches, index) in matchHistoryData.matches" :key="index">
-          <td>
+      <div class="matchHistoryCard" v-for="(matches, index) in matchHistoryData.matches" :key="index">
+        <h3>{{TimeStamp(index)}}</h3>
             <img
               :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/' + matchHistoryData.matches[index].champion + '.png'"
+              class="champImg"
             />
-          </td>
-          <td>
             <img
               :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/assets/ranked/positions/rankposition_' + leagueTier + '-' + lanePosition(index) + '.png'"
               alt
-              id="roleImg"
+              class="roleImg"
             />
-          </td>
-          <td>{{getSummonerMatchStats(index)}}</td>
-        </tr>
-      </table>
+            <img
+              :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/data/spells/icons2d/' + SummonerSpell1(index) + '.png'"
+              alt
+              class="summonerSpellIcon1"
+            />
+            <img
+              :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/data/spells/icons2d/' + SummonerSpell2(index) + '.png'"
+              alt
+              class="summonerSpellIcon2"
+            />
+            <img
+              :src="'http://raw.communitydragon.org/latest/plugins' + Keystone(index)"
+              alt
+              class="keystone"
+            />
+            <img
+              :src="'http://raw.communitydragon.org/latest/plugins' + SubStyle(index)"
+              alt
+              class="substyle"
+            />
+      </div>
     </div>
   </div>
 </template>
@@ -40,9 +55,6 @@ export default {
     leagueTier() {
       return this.$store.getters.getLeagueTier;
     },
-    KDA(index) {
-      return this.getSummonerMatchStats(index).deaths;
-    }
   },
   watch: {
     accountID() {
@@ -68,14 +80,8 @@ export default {
         InvocationType: "RequestResponse",
         LogType: "None",
         Payload:
-          '{"AccountID?": "' +
-          this.accountID +
-          '", "BeginIndex?": "' +
-          beginIndex +
-          '", "EndIndex?": "' +
-          endIndex +
-          '"}'
-      };
+          '{"AccountID?": "' + this.accountID + '", "BeginIndex?": "' + beginIndex + '", "EndIndex?": "' +endIndex +'"}'
+        };
 
       let getMatchData = lambda.invoke(matchHistoryParams).promise();
       getMatchData
@@ -83,14 +89,13 @@ export default {
           this.matchHistoryData = JSON.parse(data.Payload);
           let promises = [];
           for (let i = 0; i < this.matchHistoryData.matches.length; i++) {
-            let promise = this.getMatchDetails(
-              i,
-              this.matchHistoryData.matches[i].gameId
-            );
+            let promise = this.getMatchDetails(i, this.matchHistoryData.matches[i].gameId);
             promises.push(promise);
-          }
+            }
           Promise.all(promises).then(value => {
+            console.log(this.matchHistoryData)
             this.matchHistoryDataLoaded = true;
+            this.$emit('clicked', true)
           });
         })
         .catch(error => {
@@ -119,11 +124,8 @@ export default {
         };
         let getMatchDetailsData = lambda.invoke(matchDetailsParams).promise();
         getMatchDetailsData.then(data => {
-          this.matchHistoryData.matches[index] = Object.assign(
-            this.matchHistoryData.matches[index],
-            JSON.parse(data.Payload)
-          );
-        });
+          this.matchHistoryData.matches[index] = Object.assign(this.matchHistoryData.matches[index], JSON.parse(data.Payload));
+          });
         getMatchDetailsData.catch(error => {
           prompt(error);
         });
@@ -140,17 +142,141 @@ export default {
     getSummonerMatchStats(index) {
       var tempParticipantID;
       for (let j = 0; j < this.matchHistoryData.matches[index].participantIdentities.length; j++) {
-          console.log(this.accountID)
         if (this.matchHistoryData.matches[index].participantIdentities[j].player.accountId == this.accountID) {
           tempParticipantID = this.matchHistoryData.matches[index].participantIdentities[j].participantId;
         }
       }
       for (let k = 0; k < this.matchHistoryData.matches[index].participants.length; k++) {
         if (this.matchHistoryData.matches[index].participants[k].participantId == tempParticipantID) {
-            console.log(this.matchHistoryData.matches[index].participants[k].championId)
-            return this.matchHistoryData.matches[index].participants[k].stats.kills;
+            return this.matchHistoryData.matches[index].participants[k];
         }
       }
+    },
+     KDA(index) {
+      return this.getSummonerMatchStats(index).deaths;
+    },
+    SummonerSpell1(index) {
+      switch (this.getSummonerMatchStats(index).spell1Id) {
+        case 1:
+          return "summoner_boost";
+        case 3:
+          return "summoner_exhaust";
+        case 4:
+          return "summoner_flash";
+        case 6:
+          return "summoner_haste";
+        case 7:
+          return "summoner_heal";
+        case 11:
+          return "summoner_smite";
+        case 12:
+          return "summoner_teleport";
+        case 13:
+          return "summonermana";
+        case 14:
+          return "summonerignite";
+        case 21:
+          return "summonerbarrier";
+        case 32:
+          return "summoner_mark";
+      }
+    },
+    SummonerSpell2(index) {
+      switch (this.getSummonerMatchStats(index).spell2Id) {
+        case 1:
+          return "summoner_boost";
+        case 3:
+          return "summoner_exhaust";
+        case 4:
+          return "summoner_flash";
+        case 6:
+          return "summoner_haste";
+        case 7:
+          return "summoner_heal";
+        case 11:
+          return "summoner_smite";
+        case 12:
+          return "summoner_teleport";
+        case 13:
+          return "summonermana";
+        case 14:
+          return "summonerignite";
+        case 21:
+          return "summonerbarrier";
+        case 32:
+          return "summoner_mark";
+      }
+    },
+    Keystone(index) {
+      switch (this.getSummonerMatchStats(index).stats.perk0) {
+        case 8005:
+          return "/rcp-be-lol-game-data/global/default/v1/perk-images/styles/precision/presstheattack/presstheattack.png";
+        case 8008:
+          return "/rcp-be-lol-game-data/global/default/v1/perk-images/styles/precision/lethaltempo/lethaltempotemp.png";
+        case 8021:
+          return "/rcp-be-lol-game-data/global/default/v1/perk-images/styles/precision/fleetfootwork/fleetfootwork.png";
+        case 8010:
+          return "/rcp-be-lol-game-data/global/default/v1/perk-images/styles/Precision/conqueror/conqueror.png";
+        case 8112:
+          return "/rcp-be-lol-game-data/global/default/v1/perk-images/styles/domination/electrocute/electrocute.png";
+        case 8124:
+          return "/rcp-be-lol-game-data/global/default/v1/perk-images/styles/domination/predator/predator.png";
+        case 8128:
+          return "/rcp-be-lol-game-data/global/default/v1/perk-images/styles/domination/darkharvest/darkharvest.png";
+        case 9923:
+          return "/rcp-be-lol-game-data/global/default/v1/perk-images/styles/domination/hailofblades/hailofblades.png";
+        case 8214:
+          return "/rcp-be-lol-game-data/global/default/v1/perk-images/styles/sorcery/summonaery/summonaery.png";
+        case 8230:
+          return "/rcp-be-lol-game-data/global/default/v1/perk-images/styles/sorcery/phaserush/phaserush.png";
+        case 8437:
+          return "/rcp-be-lol-game-data/global/default/v1/perk-images/styles/resolve/graspoftheundying/graspoftheundying.png";
+        case 8439:
+          return "/rcp-be-lol-game-data/global/default/v1/perk-images/styles/resolve/veteranaftershock/veteranaftershock.png";
+        case 8465:
+          return "/rcp-be-lol-game-data/global/default/v1/perk-images/styles/resolve/guardian/guardian.png";
+        case 8351:
+          return "/rcp-be-lol-game-data/global/default/v1/perk-images/styles/inspiration/glacialaugment/glacialaugment.png";
+        case 8360:
+          return "/rcp-be-lol-game-data/global/default/v1/perk-images/styles/inspiration/unsealedspellbook/unsealedspellbook.png";
+        case 8358:
+          return "/rcp-be-lol-game-data/global/default/v1/perk-images/styles/inspiration/masterkey/masterkey.png";
+      }
+    },
+    SubStyle(index) {
+      switch (this.getSummonerMatchStats(index).stats.perkSubStyle) {
+        case 8400:
+          return "/rcp-be-lol-game-data/global/default/v1/perk-images/styles/7204_resolve.png";
+        case 8100:
+          return "/rcp-be-lol-game-data/global/default/v1/perk-images/styles/7200_domination.png";
+        case 8000:
+          return "/rcp-be-lol-game-data/global/default/v1/perk-images/styles/7201_precision.png";
+        case 8200:
+          return "/rcp-be-lol-game-data/global/default/v1/perk-images/styles/7202_sorcery.png";
+        case 8300:
+          return "/rcp-be-lol-game-data/global/default/v1/perk-images/styles/7203_whimsy.png"
+      }
+    },
+    TimeStamp(index) {
+      //time.now() - this = time in seconds.
+      //turn this into hours and return
+      let d = new Date();
+      let currentTime = d.getTime();
+      let timeElapsed = currentTime - this.matchHistoryData.matches[index].GameCreation;
+      let seconds = (timeElapsed / 1000).toFixed(0);
+      let minutes = (timeElapsed / (1000 * 60)).toFixed(0);
+      let hours = (timeElapsed / (1000 * 60 * 60)).toFixed(0);
+      let days = (timeElapsed / (1000 * 60 * 60 * 24)).toFixed(0);
+
+        if (seconds < 60) {
+            return seconds + " Secs ago";
+        } else if (minutes < 60) {
+            return minutes + " Mins ago";
+        } else if (hours < 24) {
+            return hours + " Hrs ago";
+        } else {
+            return days + " Days ago"
+        }
     }
   }
 };
@@ -159,25 +285,53 @@ export default {
 <style scoped>
 .matchHistoryContainer {
   display: flex;
+  flex-direction: column;
   position: relative;
-  justify-content: center;
+  align-items: center;
+  margin-top: 5rem;
 }
-
-.table {
+.matchHistoryCard {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 50rem;
+  height: 8rem;
+  padding: 1rem;
 }
-
-td {
-  padding-bottom: 1em;
+.champImg{
+  height: 4.5rem;
+  width: 4.5rem;
+  margin-right: 1.5rem;
+  margin-left: 1rem;
 }
-
-img {
-  width: 40%;
-  height: auto;
+.summonerSpellIcon1 {
+  width: 2rem;
+  height: 2rem;
+  margin-top: -2rem;
 }
-
-#roleImg {
-  margin-left: -2em;
-  width: 120%;
-  height: auto;
+.summonerSpellIcon2 {
+  width: 2rem;
+  height: 2rem;
+  margin-left: -2rem;
+  margin-bottom: -2rem;
+}
+.roleImg {
+  width: 4rem;
+  height: 4rem;
+  margin-right: 1.5rem;
+}
+.keystone {
+  margin-top: -2rem;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+.substyle{
+  margin-bottom: -1.8rem;
+  margin-left: -2.2rem;
+  width: 1.8rem;
+  height: 1.8rem;
+}
+h3 {
+  color: #ffffff
 }
 </style>

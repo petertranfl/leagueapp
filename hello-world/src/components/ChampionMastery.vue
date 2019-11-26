@@ -73,6 +73,9 @@ export default {
 </script>
 
 <style scoped>
+    h3 {
+        color:#fad161
+    }
     .championsContainer {
         display: flex;
         position: relative;
