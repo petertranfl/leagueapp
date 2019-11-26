@@ -34,7 +34,7 @@ export default {
         }
     },
     watch: {
-        summonerID(oldSumID, newSumID) {
+        summonerID() {
             this.getChampionMasteryByID()
         }
     },
@@ -50,23 +50,23 @@ export default {
             });
 
         //create AWS service object
-        var lambda = new AWS.Lambda({region: 'us-east-1'});
+        const lambda = new AWS.Lambda({region: 'us-east-1'});
         //create JSON object for parameters for invoking Lambda function
-        var masteryParams = {
+        const masteryParams = {
             FunctionName: 'getChampionMasteryByID',
             InvocationType: 'RequestResponse',
             LogType: 'None',
             Payload: '{"SummonerID?": ' + `"` + this.summonerID + '"}'
             };
 
-        lambda.invoke(masteryParams, (error, data) => {
-            if (error) {
-                prompt(error);
-            } else {
-                this.masteryResults = JSON.parse(data.Payload)
-                this.masteryDataLoaded = true;
-                }
-            })
+        let getMastery = lambda.invoke(masteryParams).promise()
+        getMastery.then(data => {
+            this.masteryResults = JSON.parse(data.Payload)
+            this.masteryDataLoaded = true;
+        })
+        getMastery.catch(error => {
+            prompt(error)
+        })
         }
     },
 }

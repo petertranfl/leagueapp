@@ -101,22 +101,20 @@ export default {
             });
 
             //create AWS service object
-            var lambda = new AWS.Lambda({region: 'us-east-1'});
+            const lambda = new AWS.Lambda({region: 'us-east-1'});
             //create JSON object for parameters for invoking Lambda function
-            var summonerParams = {
+            const summonerParams = {
                 FunctionName: 'getNASummonerDataByName',
                 InvocationType: 'RequestResponse',
                 LogType: 'None',
                 Payload: '{"SummonerName?": ' + `"` + this.userSummonerName + '"}'
             };
             //create variable to hold data returned by Lambda function
-            var summonerResults;
+            let summonerResults;
 
             //Calls Lambda function 'GetSummonerDataByName' with given reqParams
-            lambda.invoke(summonerParams, (error, data) => {
-                if (error) {
-                prompt(error);
-                } else {
+            let getData = lambda.invoke(summonerParams).promise()
+            getData.then(data => {
                 summonerResults = JSON.parse(data.Payload)
                 this.summonerName = summonerResults.name;
                 this.summonerLevel = summonerResults.summonerLevel;
@@ -124,8 +122,10 @@ export default {
                 this.encryptedSummonerID = summonerResults.id;
                 this.$store.dispatch('commitSummonerID', summonerResults.id);
                 this.$store.dispatch('commitAccountID', summonerResults.accountId)
-                }
-            });
+            })
+            getData.catch(error => {
+                prompt(error)
+            })
         },
         getNALeagueData() {
             //load AWS credentials
@@ -137,9 +137,9 @@ export default {
             });
 
             //create AWS service object
-            var lambda = new AWS.Lambda({region: 'us-east-1'});
+            const lambda = new AWS.Lambda({region: 'us-east-1'});
             //create JSON object for parameters for invoking Lambda function
-            var leagueParams = {
+            const leagueParams = {
                 FunctionName: 'getNALeagueDataByID',
                 InvocationType: 'RequestResponse',
                 LogType: 'None',
@@ -147,19 +147,19 @@ export default {
             };
 
             //Calls Lambda function 'GetSummonerDataByName' with given reqParams
-            lambda.invoke(leagueParams, (error, data) => {
-                if (error) {
-                prompt(error);
-                } else {
+            let getLeagueData = lambda.invoke(leagueParams).promise()
+            getLeagueData.then(data => {
                 this.leagueResults = JSON.parse(data.Payload);
                 this.sortNALeagueData(this.leagueResults);
                 this.$store.dispatch('commitLeagueTier', this.soloSummonerLeague);
                 this.summonerDataLoaded = true;
-                }
-            });
+                })
+            getLeagueData.catch(error => {
+                prompt(error)
+            })
         },
         sortNALeagueData(data) {
-            for (var i = 0; i < data.length; i++) {
+            for (let i = 0; i < data.length; i++) {
                 if (data[i].queueType == "RANKED_SOLO_5x5") {
                     this.soloSummonerLeague = data[i].tier.toLowerCase();
                 }
