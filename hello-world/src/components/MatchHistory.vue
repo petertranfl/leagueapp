@@ -32,6 +32,12 @@
               alt
               class="substyle"
             />
+            <div class="kda">
+              <p class="kills">{{getSummonerMatchStats(index).stats.kills}}</p>
+              <p class="deaths">{{getSummonerMatchStats(index).stats.deaths}}</p>
+              <p class="assists">{{getSummonerMatchStats(index).stats.assists}}</p>
+            </div>
+            <p class="ratio">{{KDA(index)}}</p>
       </div>
     </div>
   </div>
@@ -153,7 +159,11 @@ export default {
       }
     },
      KDA(index) {
-      return this.getSummonerMatchStats(index).deaths;
+      let kda = ((this.getSummonerMatchStats(index).stats.kills + this.getSummonerMatchStats(index).stats.assists) / this.getSummonerMatchStats(index).stats.deaths).toFixed(1);
+      if (kda == "Infinity") {
+        return "PERFECT"
+      }
+      return kda
     },
     SummonerSpell1(index) {
       switch (this.getSummonerMatchStats(index).spell1Id) {
@@ -331,7 +341,21 @@ export default {
   width: 1.8rem;
   height: 1.8rem;
 }
-h3 {
-  color: #ffffff
+.kills {
+  color: white;
+}
+.deaths {
+  color: rgb(219, 42, 42);
+}
+.assists {
+  color: white;
+
+}
+.kda {
+  margin-top: -2rem;
+}
+.ratio {
+  margin-bottom: -2rem;
+  color: purple;
 }
 </style>
