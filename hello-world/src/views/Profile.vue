@@ -1,8 +1,8 @@
 <template>
   <div class="summonerProfileBg">
-    <div v-if="isLoading" class="loadingIcon">
+    <div v-show="isLoading" class="loadingIcon">
     </div>
-    <div v-else>
+    <div v-show="!isLoading">
       <SummonerProfile></SummonerProfile>
       <ChampionMastery></ChampionMastery>
       <MatchHistory @clicked="finishLoading"></MatchHistory>
@@ -26,13 +26,13 @@ export default {
   },
   data() {
     return {
-      isLoading: false,
+      isLoading: true,
     }
   },
   methods: {
     finishLoading(isLoaded) {
       console.log(isLoaded)
-      this.isLoading = false
+      this.isLoading = isLoaded
     }
   }
 }

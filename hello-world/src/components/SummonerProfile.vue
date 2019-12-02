@@ -91,6 +91,7 @@ export default {
     },
     methods: {
         getNASummonerData() {
+            console.log("initial data grab")
 
             //load AWS credentials
             AWS.config.credentials = new AWS.CognitoIdentityCredentials({

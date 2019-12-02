@@ -2,13 +2,14 @@
   <div v-if="matchHistoryDataLoaded">
     <div class="matchHistoryContainer">
       <div class="matchHistoryCard" v-for="(matches, index) in matchHistoryData.matches" :key="index">
-        <h3>{{TimeStamp(index)}}</h3>
+        <div class="timeStamp">{{TimeStamp(index)}}</div>
             <img
               :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/' + matchHistoryData.matches[index].champion + '.png'"
               class="champImg"
             />
             <img
               :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/assets/ranked/positions/rankposition_' + leagueTier + '-' + lanePosition(index) + '.png'"
+              @error="handleBrokenImage"
               alt
               class="roleImg"
             />
@@ -32,12 +33,16 @@
               alt
               class="substyle"
             />
-            <div class="kda">
-              <p class="kills">{{getSummonerMatchStats(index).stats.kills}}</p>
-              <p class="deaths">{{getSummonerMatchStats(index).stats.deaths}}</p>
-              <p class="assists">{{getSummonerMatchStats(index).stats.assists}}</p>
+            <div class="kdaStats">
+              <div class="kda">
+                <p class="kills">{{getSummonerMatchStats(index).stats.kills}}</p>
+                <p class="kdaDivider">/</p>
+                <p class="deaths">{{getSummonerMatchStats(index).stats.deaths}}</p>
+                <p class="kdaDivider">/</p>
+                <p class="assists">{{getSummonerMatchStats(index).stats.assists}}</p>
+              </div>
+              <p class="ratio">{{KDA(index)}}</p>
             </div>
-            <p class="ratio">{{KDA(index)}}</p>
       </div>
     </div>
   </div>
@@ -101,7 +106,7 @@ export default {
           Promise.all(promises).then(value => {
             console.log(this.matchHistoryData)
             this.matchHistoryDataLoaded = true;
-            this.$emit('clicked', true)
+            this.$emit('clicked', false)
           });
         })
         .catch(error => {
@@ -226,7 +231,7 @@ export default {
         case 8021:
           return "/rcp-be-lol-game-data/global/default/v1/perk-images/styles/precision/fleetfootwork/fleetfootwork.png";
         case 8010:
-          return "/rcp-be-lol-game-data/global/default/v1/perk-images/styles/Precision/conqueror/conqueror.png";
+          return "/rcp-be-lol-game-data/global/default/v1/perk-images/styles/precision/conqueror/conqueror.png";
         case 8112:
           return "/rcp-be-lol-game-data/global/default/v1/perk-images/styles/domination/electrocute/electrocute.png";
         case 8124:
@@ -287,6 +292,9 @@ export default {
         } else {
             return days + " Days ago"
         }
+    },
+    handleBrokenImage(event) {
+      event.target.src = "questionMark.png"
     }
   }
 };
@@ -308,10 +316,15 @@ export default {
   height: 8rem;
   padding: 1rem;
 }
-.champImg{
+.timeStamp {
+  font-size: 1.1rem;
+  font-weight: bold;
+  width: 6rem;
+}
+.champImg {
   height: 4.5rem;
   width: 4.5rem;
-  margin-right: 1.5rem;
+  margin-right: 3rem;
   margin-left: 1rem;
 }
 .summonerSpellIcon1 {
@@ -328,7 +341,7 @@ export default {
 .roleImg {
   width: 4rem;
   height: 4rem;
-  margin-right: 1.5rem;
+  margin-right: 3rem;
 }
 .keystone {
   margin-top: -2rem;
@@ -341,6 +354,16 @@ export default {
   width: 1.8rem;
   height: 1.8rem;
 }
+.kdaStats {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  height: 6.5rem;
+  width: 10rem;
+  font-size: 1.3rem;
+  margin-left: 1rem;
+}
 .kills {
   color: white;
 }
@@ -349,13 +372,17 @@ export default {
 }
 .assists {
   color: white;
-
+}
+.kdaDivider {
+  color: black;
+  margin-left: 0.3rem;
+  margin-right: 0.3rem;
 }
 .kda {
-  margin-top: -2rem;
+  display: flex;
+  flex-direction: row;
 }
 .ratio {
-  margin-bottom: -2rem;
-  color: purple;
+  color: rgb(223, 14, 195);
 }
 </style>
