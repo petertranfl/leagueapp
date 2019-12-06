@@ -1,62 +1,59 @@
 <template>
   <div v-if="matchHistoryDataLoaded">
     <div class="matchHistoryContainer">
+      <h1>Match History</h1>
       <div class="matchHistoryCard" v-for="(matches, index) in matchHistoryData.matches" :key="index">
         <div class="timeStamp">{{TimeStamp(index)}}</div>
-            <img
-              :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/' + matchHistoryData.matches[index].champion + '.png'"
-              class="champImg"
-            />
-            <img
-              :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/assets/ranked/positions/rankposition_' + leagueTier + '-' + lanePosition(index) + '.png'"
-              @error="handleBrokenImage"
-              alt
-              class="roleImg"
-            />
-            <img
-              :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/data/spells/icons2d/' + SummonerSpell1(index) + '.png'"
-              alt
-              class="summonerSpellIcon1"
-            />
-            <img
-              :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/data/spells/icons2d/' + SummonerSpell2(index) + '.png'"
-              alt
-              class="summonerSpellIcon2"
-            />
-            <img
-              :src="'http://raw.communitydragon.org/latest/plugins' + Keystone(index)"
-              alt
-              class="keystone"
-            />
-            <img
-              :src="'http://raw.communitydragon.org/latest/plugins' + SubStyle(index)"
-              alt
-              class="substyle"
-            />
-            <div class="kdaStats">
-              <div class="kda">
-                <p class="kills">{{getSummonerMatchStats(index).stats.kills}}</p>
-                <p class="kdaDivider">/</p>
-                <p class="deaths">{{getSummonerMatchStats(index).stats.deaths}}</p>
-                <p class="kdaDivider">/</p>
-                <p class="assists">{{getSummonerMatchStats(index).stats.assists}}</p>
-              </div>
-              <p class="ratio">{{KDA(index)}}</p>
-            </div>
+        <!-- <div class="winLoss">{{win(index)}}</div> -->
+        <img
+          :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/' + matchHistoryData.matches[index].champion + '.png'"
+          class="champImg" />
+        <img
+          :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/assets/ranked/positions/rankposition_' + leagueTier + '-' + lanePosition(index) + '.png'"
+          @error="HandleBrokenImage" alt class="roleImg" />
+        <img
+          :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/data/spells/icons2d/' + SummonerSpell1(index) + '.png'"
+          alt class="summonerSpellIcon1" />
+        <img
+          :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/data/spells/icons2d/' + SummonerSpell2(index) + '.png'"
+          alt class="summonerSpellIcon2" />
+        <img :src="'http://raw.communitydragon.org/latest/plugins' + Keystone(index)" alt class="keystone" />
+        <img :src="'http://raw.communitydragon.org/latest/plugins' + SubStyle(index)" alt class="substyle" />
+        <div class="kdaStats">
+          <div class="kda">
+            <p class="kills">{{getSummonerMatchStats(index).stats.kills}}</p>
+            <p class="kdaDivider">/</p>
+            <p class="deaths">{{getSummonerMatchStats(index).stats.deaths}}</p>
+            <p class="kdaDivider">/</p>
+            <p class="assists">{{getSummonerMatchStats(index).stats.assists}}</p>
+          </div>
+          <p class="ratio">{{KDA(index)}} KDA</p>
+        </div>
+        <div class="itemsBox">
+          <img :src="'/item/' + getSummonerMatchStats(index).stats.item0 + '.png'" class="item" @error="noItem" />
+          <img :src="'/item/' + getSummonerMatchStats(index).stats.item1 + '.png'" class="item" @error="noItem" />
+          <img :src="'/item/' + getSummonerMatchStats(index).stats.item2 + '.png'" class="item" @error="noItem" />
+          <img :src="'/item/' + getSummonerMatchStats(index).stats.item3 + '.png'" class="item" @error="noItem" />
+          <img :src="'/item/' + getSummonerMatchStats(index).stats.item4 + '.png'" class="item" @error="noItem" />
+          <img :src="'/item/' + getSummonerMatchStats(index).stats.item5 + '.png'" class="item" @error="noItem" />
+        </div>
       </div>
     </div>
   </div>
+
 </template>
 
 <script>
 import AWS from "aws-sdk";
+import { green, red } from 'color-name';
 
 export default {
   name: "MatchHistory",
   data() {
     return {
       matchHistoryDataLoaded: false,
-      matchHistoryData: Object
+      matchHistoryData: Object,
+      // item: LeagueItems
     };
   },
   computed: {
@@ -74,6 +71,7 @@ export default {
   },
   methods: {
     getMatchHistory(beginIndex, endIndex) {
+      this.matchHistoryDataLoaded = false;
       AWS.config.credentials = new AWS.CognitoIdentityCredentials(
         {
           IdentityPoolId: "us-east-1:98b70204-c8a3-4336-b9be-ea2f4393f3b1"
@@ -163,10 +161,23 @@ export default {
         }
       }
     },
+    win(index) {
+      let win = this.getSummonerMatchStats(index).stats.win
+      if (win) {
+        winLoss.style.setProperty('--element-color', green)
+        return "VICTORY"
+      } else {
+        winLoss.style.setProperty('--element-color', red)
+        return "DEFEAT"
+      }
+    },
      KDA(index) {
       let kda = ((this.getSummonerMatchStats(index).stats.kills + this.getSummonerMatchStats(index).stats.assists) / this.getSummonerMatchStats(index).stats.deaths).toFixed(1);
       if (kda == "Infinity") {
         return "PERFECT"
+      }
+      if (kda == "NaN") {
+        return 0
       }
       return kda
     },
@@ -293,33 +304,51 @@ export default {
             return days + " Days ago"
         }
     },
-    handleBrokenImage(event) {
+    HandleBrokenImage(event) {
       event.target.src = "questionMark.png"
+    },
+    noItem(event) {
+      event.target.src = "/item/no_item.png";
+      event.target.className += " noItem";
     }
   }
 };
 </script>
 
 <style scoped>
+h1 {
+  color: #fad161;
+  text-shadow: 1px 0 0 rgb(49, 42, 9), 0 -1px 0 rgb(49, 42, 9), 0 1px 0 rgb(49, 42, 9), -1px 0 0 rgb(49, 42, 9);
+}
 .matchHistoryContainer {
   display: flex;
   flex-direction: column;
   position: relative;
   align-items: center;
-  margin-top: 5rem;
+  margin-top: 3rem;
 }
 .matchHistoryCard {
   display: flex;
   flex-direction: row;
   align-items: center;
   width: 50rem;
-  height: 8rem;
+  height: 6rem;
   padding: 1rem;
+  background: rgba(194, 194, 194, 0.226);
+  border-style: ridge;
+  border-color: silver;
+  border-width: 2px;
+  border-radius: 5px;
 }
 .timeStamp {
   font-size: 1.1rem;
+  color: rgb(233, 233, 233);
   font-weight: bold;
   width: 6rem;
+}
+.win-loss {
+  font-size: 1.1rem;
+  color: var(--element-color);
 }
 .champImg {
   height: 4.5rem;
@@ -359,7 +388,7 @@ export default {
   justify-content: center;
   flex-direction: column;
   align-items: center;
-  height: 6.5rem;
+  height: 6rem;
   width: 10rem;
   font-size: 1.3rem;
   margin-left: 1rem;
@@ -384,5 +413,13 @@ export default {
 }
 .ratio {
   color: rgb(223, 14, 195);
+}
+.item {
+  border-radius: 8px;
+  height: 2rem;
+  width: 2rem;
+}
+.noItem {
+  opacity: 0.3;
 }
 </style>

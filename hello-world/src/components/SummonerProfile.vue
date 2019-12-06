@@ -92,7 +92,7 @@ export default {
     methods: {
         getNASummonerData() {
             console.log("initial data grab")
-
+            this.$emit('clicked', true)
             //load AWS credentials
             AWS.config.credentials = new AWS.CognitoIdentityCredentials({
                 IdentityPoolId: 'us-east-1:98b70204-c8a3-4336-b9be-ea2f4393f3b1',
@@ -125,7 +125,7 @@ export default {
                 this.$store.dispatch('commitAccountID', summonerResults.accountId)
             })
             getData.catch(error => {
-                prompt(error)
+                //input summoner name not found or api is down
             })
         },
         getNALeagueData() {
@@ -152,6 +152,7 @@ export default {
             getLeagueData.then(data => {
                 this.leagueResults = JSON.parse(data.Payload);
                 this.sortNALeagueData(this.leagueResults);
+                //console.log(this.leagueResults)
                 this.$store.dispatch('commitLeagueTier', this.soloSummonerLeague);
                 this.summonerDataLoaded = true;
                 })
@@ -220,9 +221,11 @@ export default {
     
     h2 {
         margin-top: -1.3em;
-        color: #fad161
+        color: #fad161;
+        text-shadow: 1px 0 0 rgb(49, 42, 9), 0 -1px 0 rgb(49, 42, 9), 0 1px 0 rgb(49, 42, 9), -1px 0 0 rgb(49, 42, 9);
     }
     h3 {
-        color: #fad161
+        color: #fad161;
+        text-shadow: 1px 0 0 rgb(49, 42, 9), 0 -1px 0 rgb(49, 42, 9), 0 1px 0 rgb(49, 42, 9), -1px 0 0 rgb(49, 42, 9);
     }
 </style>
