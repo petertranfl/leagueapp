@@ -92,7 +92,7 @@ export default {
     methods: {
         getNASummonerData() {
             console.log("initial data grab")
-            this.$emit('clicked', true)
+            this.$emit('loaded', true)
             //load AWS credentials
             AWS.config.credentials = new AWS.CognitoIdentityCredentials({
                 IdentityPoolId: 'us-east-1:98b70204-c8a3-4336-b9be-ea2f4393f3b1',

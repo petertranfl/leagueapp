@@ -104,7 +104,7 @@ export default {
           Promise.all(promises).then(value => {
             console.log(this.matchHistoryData)
             this.matchHistoryDataLoaded = true;
-            this.$emit('clicked', false)
+            this.$emit('loaded', false)
           });
         })
         .catch(error => {

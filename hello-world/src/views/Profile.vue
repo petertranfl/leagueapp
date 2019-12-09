@@ -4,9 +4,9 @@
       <div class="loadingIcon"></div> 
     </div>
     <div v-show="!isLoading">
-      <SummonerProfile @clicked="beginLoading"></SummonerProfile>
+      <SummonerProfile @loaded="beginLoading"></SummonerProfile>
       <ChampionMastery></ChampionMastery>
-      <MatchHistory @clicked="finishLoading"></MatchHistory>
+      <MatchHistory @loaded="finishLoading"></MatchHistory>
     </div>
   </div>
 </template>
