@@ -4,7 +4,7 @@
       <h1>Match History</h1>
       <div class="matchHistoryCard" v-for="(matches, index) in matchHistoryData.matches" :key="index">
         <div class="timeStamp">{{TimeStamp(index)}}</div>
-        <!-- <div class="winLoss">{{win(index)}}</div> -->
+        <div class="winLoss">{{win(index)}}</div>
         <img
           :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/' + matchHistoryData.matches[index].champion + '.png'"
           class="champImg" />
@@ -38,6 +38,9 @@
           <img :src="'/item/' + getSummonerMatchStats(index).stats.item5 + '.png'" class="item" @error="noItem" />
         </div>
       </div>
+      <div class="loadMore">
+        <button @click="loadMoreMatches">Load More Matches</button>
+        </div>
     </div>
   </div>
 
@@ -164,10 +167,8 @@ export default {
     win(index) {
       let win = this.getSummonerMatchStats(index).stats.win
       if (win) {
-        winLoss.style.setProperty('--element-color', green)
         return "VICTORY"
       } else {
-        winLoss.style.setProperty('--element-color', red)
         return "DEFEAT"
       }
     },
@@ -331,10 +332,10 @@ h1 {
   display: flex;
   flex-direction: row;
   align-items: center;
-  width: 50rem;
+  width: 55rem;
   height: 6rem;
   padding: 1rem;
-  background: rgba(194, 194, 194, 0.226);
+  background: rgba(194, 194, 194, 0.295);
   border-style: ridge;
   border-color: silver;
   border-width: 2px;
@@ -346,8 +347,9 @@ h1 {
   font-weight: bold;
   width: 6rem;
 }
-.win-loss {
+.winLoss {
   font-size: 1.1rem;
+  width: 6rem;
   color: var(--element-color);
 }
 .champImg {

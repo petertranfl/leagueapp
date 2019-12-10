@@ -19,7 +19,7 @@ export default {
 }
 
 #app {
-  background: url("https://lolstatic-a.akamaihd.net/lolkit/1.1.6/resources/images/bg-default.jpg") no-repeat center center fixed;
+  background: url("../public/background.jpg") no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
