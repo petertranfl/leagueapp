@@ -4,12 +4,16 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 const state = {
+    summonerName: String,
     encryptedSummonerID: String,
     accountID: String,
     leagueTier : String,
 }
 
 const getters = {
+    getSummonerName(state) {
+        return state.summonerName
+    },
     getEncryptedSummonerID(state) {
         return state.encryptedSummonerID
     },
@@ -22,6 +26,9 @@ const getters = {
 }
 
 const mutations = {
+    saveSummonerName(state, name) {
+        state.summonerName = name
+    },
     saveSummonerID(state, sID) {
         state.encryptedSummonerID = sID
     },
@@ -34,6 +41,9 @@ const mutations = {
 }
 
 const actions = {
+    commitSummonerName(context, name) {
+        context.commit('saveSummonerName', name)
+    },
     commitSummonerID(context, sID) {
     context.commit('saveSummonerID', sID)
     },
