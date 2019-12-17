@@ -1,7 +1,7 @@
 <template>
     <div class="landingPage">
         <div class="landingText">
-            <h1> Welcome to the SummonerSpy! <br> <br> Look up Summoners by searching for their Summoner Name below. </h1>
+            <h1> Welcome to the SummonerSpy! <br> <br> Look up a Summoner by searching for their Summoner Name below. </h1>
         </div>
         <div class="searchBar">
             <input v-model="summonerName" type="text" v-on:keyup.enter="submitSearch">
@@ -13,13 +13,13 @@
 export default {
     data: function() {
         return {
-
         summonerName: ""
         }
     },
     methods: {
         submitSearch() {
-            this.$emit("searchRequest", this.summonerName)
+            this.$store.commit('saveSummonerName', this.summonerName)
+            this.$router.push('/profile/')
         },
     }
 }
@@ -50,9 +50,10 @@ export default {
         height: 1.5rem;
         width: 20rem;
         font-size: 1.3rem;
+        border-style: none;
         border-radius: 0.5rem;
         color: #fad161;
-        border-color:rgb(77, 65, 1);
-        background: rgb(10, 10, 0);
+        /*border-color:rgb(77, 65, 1);*/
+        background: rgba(255, 255, 255, 0.205);
     }
 </style>

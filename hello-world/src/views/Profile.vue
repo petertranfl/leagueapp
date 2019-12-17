@@ -3,10 +3,13 @@
     <div class="loadingDiv" v-show="isLoading">
       <div class="loadingIcon"></div> 
     </div>
-    <div v-show="!isLoading">
-      <SummonerProfile @loaded="beginLoading"></SummonerProfile>
+    <div v-show="!isLoading && !error">
+      <SummonerProfile @loading="beginLoading" @error="loadError"></SummonerProfile>
       <ChampionMastery></ChampionMastery>
-      <MatchHistory @loaded="finishLoading"></MatchHistory>
+      <MatchHistory @loading="finishLoading" @error="loadError"></MatchHistory>
+    </div>
+    <div v-if="error">
+      <h2> big error </h2>
     </div>
   </div>
 </template>
@@ -26,7 +29,8 @@ export default {
   },
   data() {
     return {
-      isLoading: false,
+      isLoading: true,
+      error: false
     }
   },
   methods: {
@@ -35,6 +39,9 @@ export default {
     },
     finishLoading(isLoading) {
       this.isLoading = isLoading
+    },
+    loadError(isError) {
+      this.error = isError;
     }
   }
 }

@@ -38,9 +38,9 @@
           <img :src="'/item/' + getSummonerMatchStats(index).stats.item5 + '.png'" class="item" @error="noItem" />
         </div>
       </div>
-      <div class="loadMore">
+      <!-- <div class="loadMore">
         <button @click="loadMoreMatches">Load More Matches</button>
-        </div>
+      </div> -->
     </div>
   </div>
 
@@ -107,11 +107,12 @@ export default {
           Promise.all(promises).then(value => {
             console.log(this.matchHistoryData)
             this.matchHistoryDataLoaded = true;
-            this.$emit('loaded', false)
+            this.$emit('error', false);
+            this.$emit('loading', false);
           });
         })
         .catch(error => {
-          prompt(error);
+          this.$emit('error', true)
         });
     },
     getMatchDetails(index, matchID) {

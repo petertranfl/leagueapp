@@ -2,7 +2,7 @@
     <div class="main-container">
         <div v-if="summonerDataLoaded">
             <div class="profile-container">
-                <img id="rankedCrest" :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/' + leagueNumber + '_' + soloSummonerLeague + '/images/' + soloSummonerLeague + '_base_sheeng.png'" alt=""/>
+                <img id="rankedCrest" :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/' + leagueNumber + '_' + soloSummonerLeague + '/images/' + soloSummonerLeague + '_base_sheeng.png'" alt="" @error="noImg"/>
                 <img id="profileIcon" :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/' + profileIconID + '.jpg'"/>
                 <img id="banner" :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/assets/regalia/banners/backgrounds/solidbanner_animatable.png'"/>
                 <img id="trim" :src="'http://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/assets/regalia/banners/trims/' + banner + '.png'"/>
@@ -22,9 +22,7 @@ export default {
     name: 'SummonerProfile',
     data() {
         return {
-            summonerName: String,
             summonerLevel: Number,
-            userSummonerName: "lolitspetey",
             profileIconID: Number,
             encryptedSummonerID: String,
             flexSummonerLeague: String,
@@ -37,11 +35,17 @@ export default {
         this.getNASummonerData();
     },
     watch: {
+        summonerName() {
+            this.getNASummonerData();
+        },
         encryptedSummonerID(){
             this.getNALeagueData();
         }
     },
     computed: {
+        summonerName() {
+            return this.$store.state.summonerName
+        },
         leagueNumber() {
             switch (this.soloSummonerLeague) {
                 case "iron":
@@ -91,8 +95,7 @@ export default {
     },
     methods: {
         getNASummonerData() {
-            console.log("initial data grab")
-            this.$emit('loaded', true)
+            this.$emit('loading', true)
             //load AWS credentials
             AWS.config.credentials = new AWS.CognitoIdentityCredentials({
                 IdentityPoolId: 'us-east-1:98b70204-c8a3-4336-b9be-ea2f4393f3b1',
@@ -108,7 +111,7 @@ export default {
                 FunctionName: 'getNASummonerDataByName',
                 InvocationType: 'RequestResponse',
                 LogType: 'None',
-                Payload: '{"SummonerName?": ' + `"` + this.userSummonerName + '"}'
+                Payload: '{"SummonerName?": ' + `"` + this.summonerName + '"}'
             };
             //create variable to hold data returned by Lambda function
             let summonerResults;
@@ -116,16 +119,21 @@ export default {
             //Calls Lambda function 'GetSummonerDataByName' with given reqParams
             let getData = lambda.invoke(summonerParams).promise()
             getData.then(data => {
+                if (data.Payload == "{}") {
+                    this.$emit('error', true)
+                    this.$emit('loading', false)
+                } else {
                 summonerResults = JSON.parse(data.Payload)
-                this.summonerName = summonerResults.name;
                 this.summonerLevel = summonerResults.summonerLevel;
                 this.profileIconID = summonerResults.profileIconId;
                 this.encryptedSummonerID = summonerResults.id;
                 this.$store.dispatch('commitSummonerID', summonerResults.id);
                 this.$store.dispatch('commitAccountID', summonerResults.accountId)
+                }
             })
             getData.catch(error => {
-                //input summoner name not found or api is down
+                console.log(error)
+                this.$emit('error', true)
             })
         },
         getNALeagueData() {
@@ -157,7 +165,8 @@ export default {
                 this.summonerDataLoaded = true;
                 })
             getLeagueData.catch(error => {
-                prompt(error)
+                console.log(error)
+                this.$emit('error', true)
             })
         },
         sortNALeagueData(data) {
@@ -167,6 +176,9 @@ export default {
                 }
                 else this.flexSummonerLeague = data[i].tier.toLowerCase();
             }
+        },
+        noImg(event) {
+            event.target.style.display='none'
         }
     },
 }
