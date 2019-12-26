@@ -1,29 +1,12 @@
-# hello-world
+# Welcome to the League App
 
-## Project setup
-```
-npm install
-```
+## Search for Summoners in League of Legends
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+Just type in the name of the Summoner you are looking for
 
-### Compiles and minifies for production
-```
-npm run build
-```
 
-### Run your tests
-```
-npm run test
-```
+### Provides data on every single player in the League of Legends community. Only on North American server for now
 
-### Lints and fixes files
-```
-npm run lint
-```
+If the site does not work, I just need to renew my 24hr API Key that Riot provides. Please contact me at petertranfl@gmail.com if you wish to see the project working and the site errors out.
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+Keep in mind this is only temporary until Riot Games approves of my project and gives me a non-expiring key
